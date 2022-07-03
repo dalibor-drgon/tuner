@@ -18,6 +18,17 @@
         </textarea>
 
         <p><input type="button" onclick="ui.measure();" value="Measure!" /></p>
+
+        <p>Reference (dB) (paste here the Results of some measured speaker):</p>
+        <textarea id="reference" rows=20>
+        </textarea>
+
+        <p>Equalizer output (freq, dB):</p>
+        <textarea id="output" rows=20>
+        </textarea>
+
+        <p><input type="button" onclick="ui.calculateProfile();" value="Calculate profile!" /></p>
+
     </body>
 </html>
 

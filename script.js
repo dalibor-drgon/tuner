@@ -91,8 +91,7 @@ var processor = (function() {
         if(prev_intensities.length == 5) {
             var mean = calcMean(prev_intensities);
             var mse = calcMSE(prev_intensities, mean);
-            console.log(prev_intensities, mean, mse);
-            if (mse < 1 && mean > -40) {
+            if (mse < 1 && mean > -45) {
                 player.stop();
                 setRunning(false);
                 promise_function(mean);
@@ -130,8 +129,6 @@ var processor = (function() {
 var recorder = function () {
 
     var audioContext;
-
-    console.log("audio is starting up ...");
 
     var BUFF_SIZE_RENDERER = 16384;
 
@@ -193,7 +190,6 @@ var recorder = function () {
             var curr_volume = this.value;
             gain_node.gain.value = curr_volume;
 
-            console.log("curr_volume ", curr_volume);
         });
         */
 
@@ -214,7 +210,6 @@ var recorder = function () {
 
         var time_domain = new Float32Array(buffer_length);
 
-        console.log("buffer_length " + buffer_length);
 
         script_processor_analysis_node.onaudioprocess = function() {
 
