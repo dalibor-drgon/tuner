@@ -1,0 +1,23 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+    <title>capture microphone then show time & frequency domain output</title>
+
+    <script type="text/javascript" src="./script.js"></script>
+    <script type="text/javascript" src="./ui.js"></script>
+
+</head>
+    <body>
+        <p>Type all of the frequencies you want to test:</p>
+        <textarea id="frequencies" rows=20>
+100
+1000
+10000
+        </textarea>
+        
+        <p>Results (dB):</p>
+        <textarea id="results" rows=20>
+        </textarea>
+
+        <p><input type="button" onclick="ui.measure();" value="Measure!" /></p>
+    </body>
+</html>
+
