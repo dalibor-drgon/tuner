@@ -86,10 +86,21 @@ var ui = (function () {
         }
         appendMeasurements(out);
     }
+
+    function testVolume() {
+        processor.testVolume(getFrequencies())
+        .then((hit_max) => {
+            if (hit_max)
+                alert("Max measured volume was higher than 90%, please lower your microphone amplification volume");
+            else
+                alert("Max measured volume was lower than 90%, you can continue with measuring the decibels");
+        });
+    }
 return {
         getFrequencies,
         appendMeasurements,
         measure,
-        calculateProfile
+        calculateProfile,
+        testVolume
     };
 })();

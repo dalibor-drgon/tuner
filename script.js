@@ -28,12 +28,19 @@ var processor = (function() {
     var prev_intensities = [];
     var promise_function;
     var to_skip = 0;
+    var max_reached = 0;
 
     function onInit(sample_freq) {
         sample_rate = sample_freq;
     }
 
     function onData(data) {
+        for(var i = 0; i < data.length; i++) {
+            if (Math.abs(data[i]) > 0.9) {
+                max_reached = true;
+                break;
+            }
+        }
         if(to_skip != 0) {
             to_skip --;
             return;
@@ -86,12 +93,13 @@ var processor = (function() {
 
         var intensity = calcIntensity(buf, samplesRequired);
         prev_intensities.push(intensity);
-        while(prev_intensities.length > 5)
+        while(prev_intensities.length > 10)
             prev_intensities.shift();
-        if(prev_intensities.length == 5) {
+        if(prev_intensities.length == 10) {
             var mean = calcMean(prev_intensities);
             var mse = calcMSE(prev_intensities, mean);
-            if (mse < 1 && mean > -45) {
+            console.log(mean, mse);
+            if (mse < 1 && mean > -70) {
                 player.stop();
                 setRunning(false);
                 promise_function(mean);
@@ -118,23 +126,56 @@ var processor = (function() {
         return promise;
     }
 
+    function wasMaxReached() {
+        var was = max_reached;
+        max_reached = false;
+        return was;
+    }
+
+    function playTemporally(freqs, f) {
+        if (freqs.length == 1) {
+            measure(freqs[0])
+                .then(() => {
+                    f(max_reached);
+                });
+            return;
+        }
+        var freq = freqs[0];
+        player.play(freq);
+        setTimeout(() => {
+            player.stop();
+            playTemporally(freqs.slice(1), f);
+        }, 20 / freq + 0.05);
+    }
+
+    function testVolume(freqs) {
+        max_reached = false;
+        if (freqs.length == 0) {
+            return new Promise((f) => { f(false); });
+        }
+        return new Promise((f) => {
+            playTemporally([...freqs], f);
+        });
+    }
+
     return {
         buf,
         onInit,
         onData,
-        measure
+        measure,
+        wasMaxReached,
+        testVolume
     };
 })();
 
 var recorder = function () {
 
-    var audioContext;
+    //var audioContext;
 
     var BUFF_SIZE_RENDERER = 16384;
 
     var audioInput = null,
     microphone_stream = null,
-    gain_node = null,
     script_processor_node = null,
     script_processor_analysis_node = null,
     analyser_node = null;
