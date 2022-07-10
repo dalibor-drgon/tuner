@@ -65,7 +65,7 @@ var processor = (function() {
             cos += buf[i] * Math.cos(angle);
             sin += buf[i] * Math.sin(angle);
         }
-        return 20 * Math.log10(Math.sqrt(cos * cos + sin * sin) / len);
+        return 20 * Math.log10(Math.sqrt(cos * cos + sin * sin) / Math.ceil(len));
     }
 
     function calcMean(intensities) {
@@ -98,7 +98,6 @@ var processor = (function() {
         if(prev_intensities.length == 10) {
             var mean = calcMean(prev_intensities);
             var mse = calcMSE(prev_intensities, mean);
-            console.log(mean, mse);
             if (mse < 1 && mean > -70) {
                 player.stop();
                 setRunning(false);
